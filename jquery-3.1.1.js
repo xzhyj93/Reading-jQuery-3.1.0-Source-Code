@@ -117,6 +117,7 @@ var
 	rdashAlpha = /-([a-z])/g,
 
 	// Used by jQuery.camelCase as callback to replace()
+	// 在jQuery工具方法中camelCase中使用. 返回字母大写
 	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
 	};
@@ -299,6 +300,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	return target;
 };
 
+//jQuery核心工具方法
 jQuery.extend( {
 
 	// Unique for each copy of jQuery on the page
@@ -307,10 +309,12 @@ jQuery.extend( {
 	// Assume jQuery is ready without the ready module
 	isReady: true,
 
+	//报错，对外抛出一个异常
 	error: function( msg ) {
 		throw new Error( msg );
 	},
 
+	//一个空函数. 没有看到内部使用的地方
 	noop: function() {},
 
 	isFunction: function( obj ) {
@@ -389,14 +393,22 @@ jQuery.extend( {
 	// Convert dashed to camelCase; used by the css and data modules
 	// Support: IE <=9 - 11, Edge 12 - 13
 	// Microsoft forgot to hump their vendor prefix (#9572)
+	// 转化成骆驼峰命名
 	camelCase: function( string ) {
+		//rmsPrefix = /^-ms-/, 首先修正前缀-ms-, 如有修正为ms-
+		//rdashAlpha = /-([a-z])/g,
+		//fcamelCase是一个函数, 被replace调用, 返回去掉-后对应的大写字母
+		//replace的第二个参数可以是一个函数,这个函数可以有多个参数.
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
+	//返回DOM节点的节点名字，或者判断DOM节点名是否为某某名字。
+	//如果含有name参数, 则检查DOM节点名与name是否对应; 否则返回元素节点名
 	nodeName: function( elem, name ) {
 		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
+	//遍历数组或对象
 	each: function( obj, callback ) {
 		var length, i = 0;
 
@@ -421,6 +433,12 @@ jQuery.extend( {
 	// Support: Android <=4.0 only
 	//去除字符串两端的空格
 	trim: function( text ) {
+		//rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+		//\s查找空白字符; 
+		//\uxxxx匹配以十六进制数xxxx规定的Unicode字符;  这里\uFEFF表示字节序标记,空白字符
+		//\xxx表示查找以八进制数xxx规定的字符; 这里\xAO表示不换行的空格代码,即nbsp
+		//replace() 方法用于在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。
+		//所以下面即找出所有的字符串开头和结尾处的空白字符,并以空字符串""代替
 		return text == null ?
 			"" :
 			( text + "" ).replace( rtrim, "" );
@@ -548,6 +566,7 @@ jQuery.extend( {
 		return proxy;
 	},
 
+	//获取当前时间戳
 	now: Date.now,
 
 	// jQuery.support is not used in Core but other projects attach their
